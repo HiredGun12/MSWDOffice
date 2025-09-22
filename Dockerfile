@@ -11,9 +11,11 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
+    libzip-dev \
     unzip \
-    libpq-dev
+    zip \
+    libpq-dev \
+    && docker-php-ext-install zip
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo pdo_pgsql mbstring exif pcntl bcmath gd
@@ -24,7 +26,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Copy existing app
 COPY . .
 
-# Install dependencies
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Set Laravel permissions
@@ -33,5 +35,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Expose port 8000
 EXPOSE 8000
 
-# Start Laravel server
+# Start Laravel server and run migrations
 CMD ["sh", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000"]
