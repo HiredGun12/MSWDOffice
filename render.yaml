@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: laravel-livewire
+    env: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: mswd
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: mswd
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: mswd
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: mswd
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: mswd
+          property: password
+databases:
+  - name: mswd
+    plan: free
